@@ -1,36 +1,38 @@
 package com.example.diary
-
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.diary.data.model.Note
+import com.example.diary.databinding.NoteItemBinding
 
-class NoteAdapter(private val itemList: ArrayList<NoteItem>): RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
+class NoteAdapter: RecyclerView.Adapter<NoteAdapter.TodoViewHolder>() {
 
+    private val items = ArrayList<Note>()
 
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteAdapter.ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.note_item, parent, false)
-        return ViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : TodoViewHolder {
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding = NoteItemBinding.inflate(layoutInflater)
+        return TodoViewHolder(binding)
     }
+
     override fun getItemCount(): Int {
-        return itemList.size
+        return items.size
     }
-    override fun onBindViewHolder(holder: NoteAdapter.ViewHolder, position: Int) {
-        holder.name.text = itemList[position].title
-        holder.number.text = itemList[position].content
-        holder.date.text = itemList[position].date
 
-        //아이템 클릭부분
-        holder.itemView.setOnClickListener {
-            Log.d("test", "onCreate: 이게 눌린건기ㅏ${itemList[position].title} ")
-        }
+    override fun onBindViewHolder(holder: TodoViewHolder, position: Int) {
+        holder.bind(items[position])
     }
-    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        val name: TextView = itemView.findViewById(R.id.note_title)
-        val number: TextView = itemView.findViewById(R.id.note_content)
-        val date: TextView = itemView.findViewById(R.id.note_date)
+
+    fun setList(note: List<Note>) {
+        items.clear()
+        items.addAll(note)
+    }
+
+    inner class TodoViewHolder(private val binding: NoteItemBinding):RecyclerView.ViewHolder(binding.root){
+
+        fun bind(note: Note){
+            binding.noteTitle.text = note.title
+            binding.noteContent.text = note.content
+        }
     }
 }
